@@ -1,6 +1,6 @@
 import React from 'react'
-import { TrendingUp, Users, Headphones, Play } from 'lucide-react'
-import { creatorProfile } from '../data/mockData'
+import { TrendingUp, Users, Headphones, Play, ArrowRight } from 'lucide-react'
+import { creatorProfile, creatorEpisodes } from '../data/mockData'
 
 export default function CreatorDashboard({ isDarkTheme, onNavigate }) {
   const bgClass = isDarkTheme ? 'bg-gray-900' : 'bg-white'
@@ -95,16 +95,37 @@ export default function CreatorDashboard({ isDarkTheme, onNavigate }) {
             <h2 className={`text-2xl font-bold ${textClass}`}>Recent Episodes</h2>
             <button
               onClick={() => onNavigate('episodes')}
-              className="text-purple-500 hover:text-purple-600 font-semibold"
+              className="text-purple-500 hover:text-purple-600 font-semibold flex items-center gap-1 transition-colors"
             >
-              View All →
+              View All <ArrowRight size={18} />
             </button>
           </div>
-          <div className="grid gap-4">
-            {/* Placeholder for episodes list */}
-            <div className={`${cardBg} border ${borderClass} rounded-xl p-6 text-center ${secondaryText}`}>
-              Loading episodes...
-            </div>
+          <div className="space-y-4">
+            {creatorEpisodes.filter(ep => ep.status === 'published').slice(0, 3).map((episode) => (
+              <div
+                key={episode.id}
+                className={`${cardBg} border ${borderClass} rounded-xl p-4 hover:shadow-md transition-all cursor-pointer hover:border-purple-400`}
+              >
+                <div className="flex gap-4 items-start">
+                  <div className="text-3xl">{episode.thumbnail}</div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className={`font-bold ${textClass} line-clamp-1`}>{episode.title}</h3>
+                    <p className={`text-sm ${secondaryText} line-clamp-1 mt-1`}>{episode.description}</p>
+                    <div className={`flex gap-4 text-xs ${secondaryText} mt-2`}>
+                      <span>📅 {episode.publishedDate}</span>
+                      <span>▶️ {episode.analytics.plays?.toLocaleString()} plays</span>
+                      <span>💬 {episode.analytics.comments || 0} comments</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => onNavigate('episodes')}
+                    className={`text-purple-500 hover:bg-purple-100 dark:hover:bg-purple-900/30 p-2 rounded-lg transition-colors flex-shrink-0`}
+                  >
+                    <Play size={20} />
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

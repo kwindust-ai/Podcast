@@ -244,6 +244,197 @@ export const suggestedUpdates = [
   }
 ];
 
+// Episode-specific comments and timestamped updates
+export const episodeTimestampedUpdates = {
+  1: [ // The Blackwell Case: Part 1
+    {
+      id: 1,
+      timestamp: "12:45",
+      title: "DNA Evidence Confirmed",
+      content: "Lab results just came in - DNA found under victim's fingernails matches suspect's profile with 99.9% accuracy.",
+      postedAt: "Feb 22, 2026 2:30 PM",
+      type: "breaking"
+    },
+    {
+      id: 2,
+      timestamp: "28:30",
+      title: "Witness Statement Update",
+      content: "New witness came forward claiming to have seen the suspect near Blackwell's home the night of disappearance.",
+      postedAt: "Feb 22, 2026 1:15 PM",
+      type: "update"
+    }
+  ],
+  2: [ // The Blackwell Case: Part 2
+    {
+      id: 1,
+      timestamp: "5:20",
+      title: "Suspect's Alibi Unravels",
+      content: "Suspect claimed to be in another state. Cell phone records place them 2 miles from crime scene.",
+      postedAt: "Feb 21, 2026 3:45 PM",
+      type: "breaking"
+    },
+    {
+      id: 2,
+      timestamp: "34:15",
+      title: "Financial Motive Established",
+      content: "Blackwell's will leaves entire estate to suspect. Motive now crystal clear.",
+      postedAt: "Feb 21, 2026 2:20 PM",
+      type: "update"
+    }
+  ],
+  3: [ // The Blackwell Case: Part 3
+    {
+      id: 1,
+      timestamp: "8:30",
+      title: "ARREST MADE",
+      content: "After DNA confirmation, suspect arrested at home. No resistance during arrest.",
+      postedAt: "Feb 20, 2026 5:10 PM",
+      type: "breaking"
+    },
+    {
+      id: 2,
+      timestamp: "45:00",
+      title: "Statement to Police Released",
+      content: "Suspect confessed to argument that turned physical. Claims it was self-defense.",
+      postedAt: "Feb 20, 2026 4:30 PM",
+      type: "major"
+    }
+  ],
+  4: [ // The Kovac Trial
+    {
+      id: 1,
+      timestamp: "15:30",
+      title: "First Witness Takes Stand",
+      content: "Prosecution's star witness testifies about seeing Kovac move suspicious funds offshore.",
+      postedAt: "Feb 21, 2026 11:20 AM",
+      type: "update"
+    }
+  ]
+};
+
+export const episodeListenerComments = {
+  1: [ // The Blackwell Case: Part 1
+    {
+      id: 1,
+      author: "CriminalJusticeStu",
+      text: "Wait, the DNA evidence was found under the fingernails? That means she fought back. This case just got way darker.",
+      timestamp: "3 hours ago",
+      likes: 234
+    },
+    {
+      id: 2,
+      author: "DetectiveNerd",
+      text: "The cell phone records at 28:30 are so important. That's when the alibi completely falls apart.",
+      timestamp: "5 hours ago",
+      likes: 189
+    },
+    {
+      id: 3,
+      author: "LawStudentLife",
+      text: "Can you explain more about how DNA from fingernails is admissible? Chain of custody must be ironclad.",
+      timestamp: "7 hours ago",
+      likes: 156
+    },
+    {
+      id: 4,
+      author: "TrueCrimeFan89",
+      text: "The disappearance seems less mysterious now. When you have motive + opportunity + evidence...",
+      timestamp: "8 hours ago",
+      likes: 142
+    },
+    {
+      id: 5,
+      author: "ForensicsGeek",
+      text: "That 99.9% accuracy is incredible. This case feels solved already and we're only on episode 1!",
+      timestamp: "10 hours ago",
+      likes: 198
+    }
+  ],
+  2: [ // The Blackwell Case: Part 2
+    {
+      id: 1,
+      author: "SleuthMaster",
+      text: "The alibi falling apart at 5:20 was INSANE. Cell phone records don't lie.",
+      timestamp: "2 hours ago",
+      likes: 267
+    },
+    {
+      id: 2,
+      author: "CaseAnalyzer",
+      text: "Estate worth millions? That's the classic motive right there. Follow the money.",
+      timestamp: "4 hours ago",
+      likes: 213
+    },
+    {
+      id: 3,
+      author: "TrialWatcher",
+      text: "Part 2 is even better than Part 1. The pacing of evidence reveals is perfect.",
+      timestamp: "6 hours ago",
+      likes: 178
+    },
+    {
+      id: 4,
+      author: "LegalBeagle",
+      text: "With cell phone records + financial motive + DNA... prosecution has an airtight case.",
+      timestamp: "8 hours ago",
+      likes: 234
+    }
+  ],
+  3: [ // The Blackwell Case: Part 3
+    {
+      id: 1,
+      author: "BreakingNewsBuff",
+      text: "THE ARREST! I literally gasped when you announced it. This investigation moved fast.",
+      timestamp: "1 hour ago",
+      likes: 445
+    },
+    {
+      id: 2,
+      author: "JusticeSeeker",
+      text: "The self-defense claim seems weak considering the premeditation shown in earlier episodes.",
+      timestamp: "3 hours ago",
+      likes: 289
+    },
+    {
+      id: 3,
+      author: "CourtJunkie",
+      text: "Can't believe this is going to trial. The confession almost guarantees conviction.",
+      timestamp: "5 hours ago",
+      likes: 312
+    },
+    {
+      id: 4,
+      author: "CriminalDefenseLawyer",
+      text: "As someone in the legal field, the prosecution's evidence chain here is exemplary. Defense has a tough road.",
+      timestamp: "7 hours ago",
+      likes: 223
+    }
+  ],
+  4: [ // The Kovac Trial
+    {
+      id: 1,
+      author: "FinancialCrimeNerd",
+      text: "Offshore accounts in the Cayman Islands is textbook money laundering. Kovac is toast.",
+      timestamp: "4 hours ago",
+      likes: 178
+    },
+    {
+      id: 2,
+      author: "TrialObserver",
+      text: "That witness testimony at 15:30 was devastating for the defense. Direct evidence of intent.",
+      timestamp: "6 hours ago",
+      likes: 145
+    },
+    {
+      id: 3,
+      author: "CorporateFraud",
+      text: "This is the clearest embezzlement case I've heard in ages. Great breakdown Sarah.",
+      timestamp: "8 hours ago",
+      likes: 167
+    }
+  ]
+};
+
 // Remove old data exports
 export const mockChatMessages = []
 export const mockResources = []

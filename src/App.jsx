@@ -5,10 +5,14 @@ import EpisodeUpload from './components/EpisodeUpload'
 import Analytics from './components/Analytics'
 import LiveStream from './components/LiveStream'
 import EpisodeUpdates from './components/EpisodeUpdates'
+import EpisodesList from './components/EpisodesList'
+import EpisodeDetail from './components/EpisodeDetail'
+import EpisodePlayer from './components/EpisodePlayer'
 
 export default function App() {
   const [currentView, setCurrentView] = useState('dashboard')
   const [isDarkTheme, setIsDarkTheme] = useState(false)
+  const [selectedEpisodeId, setSelectedEpisodeId] = useState(null)
 
   const bgClass = isDarkTheme ? 'bg-gray-900' : 'bg-white'
   const textClass = isDarkTheme ? 'text-gray-100' : 'text-gray-900'
@@ -17,6 +21,11 @@ export default function App() {
 
   const handleNavigate = (view) => {
     setCurrentView(view)
+  }
+
+  const handleSelectEpisode = (episodeId) => {
+    setSelectedEpisodeId(episodeId)
+    setCurrentView('episode-detail')
   }
 
   const handleBack = () => {
@@ -42,6 +51,9 @@ export default function App() {
               isDarkTheme ? 'bg-gray-700' : 'bg-gray-100'
             }`}>
               {currentView === 'dashboard' && '📊 Dashboard'}
+              {currentView === 'episodes' && '📺 Episodes'}
+              {currentView === 'episode-detail' && '📖 Episode Details'}
+              {currentView === 'episode-player' && '▶️ Playing Episode'}
               {currentView === 'upload' && '📤 Upload'}
               {currentView === 'analytics' && '📈 Analytics'}
               {currentView === 'live' && '🔴 Live'}
@@ -72,6 +84,30 @@ export default function App() {
       <div className="transition-all duration-300">
         {currentView === 'dashboard' && (
           <CreatorDashboard isDarkTheme={isDarkTheme} onNavigate={handleNavigate} />
+        )}
+
+        {currentView === 'episodes' && (
+          <EpisodesList isDarkTheme={isDarkTheme} onSelectEpisode={handleSelectEpisode} onBack={handleBack} />
+        )}
+
+        {currentView === 'episode-detail' && (
+          <EpisodeDetail 
+            isDarkTheme={isDarkTheme} 
+            episodeId={selectedEpisodeId} 
+            onBack={() => setCurrentView('episodes')}
+            onOpenPlayer={(episodeId) => {
+              setSelectedEpisodeId(episodeId)
+              setCurrentView('episode-player')
+            }}
+          />
+        )}
+
+        {currentView === 'episode-player' && (
+          <EpisodePlayer 
+            isDarkTheme={isDarkTheme} 
+            episodeId={selectedEpisodeId} 
+            onBack={() => setCurrentView('episode-detail')}
+          />
         )}
 
         {currentView === 'upload' && (

@@ -1,0 +1,603 @@
+import React, { useState, useEffect, useRef } from 'react'
+import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock, Plus, CheckCircle } from 'lucide-react'
+import { creatorEpisodes, episodeListenerComments, episodeTimestampedUpdates } from '../data/mockData'
+
+export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
+  const [selectedEpisode, setSelectedEpisode] = useState(() => 
+    creatorEpisodes.find(ep => ep.id === episodeId) || creatorEpisodes[0]
+  )
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+  const [volume, setVolume] = useState(70)
+  const [showUpdateForm, setShowUpdateForm] = useState(false)
+  const [updateTitle, setUpdateTitle] = useState('')
+  const [updateContent, setUpdateContent] = useState('')
+  const [selectedUpdateType, setSelectedUpdateType] = useState('update')
+  const [updates, setUpdates] = useState(episodeTimestampedUpdates[episodeId] || [])
+  const [comments, setComments] = useState(episodeListenerComments[episodeId] || [])
+  const [showCommentsList, setShowCommentsList] = useState(false)
+  const progressBarRef = useRef(null)
+
+  // Auto-play and progress
+  useEffect(() => {
+    if (!isPlaying) return
+    const interval = setInterval(() => {
+      setCurrentTime(prev => {
+        if (prev >= selectedEpisode.duration) {
+          setIsPlaying(false)
+          return selectedEpisode.duration
+        }
+        return prev + 1
+      })
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [isPlaying, selectedEpisode.duration])
+
+  const textClass = isDarkTheme ? 'text-gray-100' : 'text-gray-900'
+  const secondaryText = isDarkTheme ? 'text-gray-400' : 'text-gray-600'
+  const bgClass = isDarkTheme ? 'bg-gray-900' : 'bg-white'
+  const cardBg = isDarkTheme ? 'bg-gray-800' : 'bg-gray-50'
+  const borderClass = isDarkTheme ? 'border-gray-700' : 'border-gray-200'
+  const inputBg = isDarkTheme ? 'bg-gray-700 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  const handleProgressBarClick = (e) => {
+    if (!progressBarRef.current) return
+    const rect = progressBarRef.current.getBoundingClientRect()
+    const percent = (e.clientX - rect.left) / rect.width
+    const newTime = Math.floor(percent * selectedEpisode.duration)
+    setCurrentTime(newTime)
+  }
+
+  const handleAddUpdateAtCurrentTime = () => {
+    setShowUpdateForm(true)
+  }
+
+  const handlePostUpdate = () => {
+    if (updateTitle.trim() && updateContent.trim()) {
+      const newUpdate = {
+        id: updates.length + 1,
+        timestamp: formatTime(currentTime),
+        title: updateTitle,
+        content: updateContent,
+        postedAt: new Date().toLocaleString(),
+        type: selectedUpdateType
+      }
+      setUpdates([...updates, newUpdate])
+      setUpdateTitle('')
+      setUpdateContent('')
+      setSelectedUpdateType('update')
+      setShowUpdateForm(false)
+    }
+  }
+
+  // Get updates and comments that appear at current timestamp
+  const getItemsAtCurrentTime = () => {
+    const items = []
+    
+    // Add updates at current time
+    updates.forEach(update => {
+      const [updateMins, updateSecs] = update.timestamp.split(':').map(Number)
+      const updateTimeSeconds = updateMins * 60 + updateSecs
+      if (Math.abs(updateTimeSeconds - currentTime) < 2) {
+        items.push({
+          type: 'update',
+          data: update,
+          icon: '📌'
+        })
+      }
+    })
+
+    // Add comments at current time (if they had timestamps)
+    comments.forEach(comment => {
+      // Extract time from comment timestamp if available
+      const match = comment.timestamp.match(/(\d+)([a-z])\s/i)
+      if (match) {
+        const value = parseInt(match[1])
+        const unit = match[2].toLowerCase()
+        let commentTimeSeconds = 0
+        if (unit === 'm') commentTimeSeconds = value * 60
+        else if (unit === 's') commentTimeSeconds = value
+        
+        if (Math.abs(commentTimeSeconds - currentTime) < 2) {
+          items.push({
+            type: 'comment',
+            data: comment,
+            icon: '💬'
+          })
+        }
+      }
+    })
+
+    return items
+  }
+
+  const currentItems = getItemsAtCurrentTime()
+
+  // Get all markers for timeline visualization
+  const getTimelineMarkers = () => {
+    const markers = []
+    
+    updates.forEach(update => {
+      const [mins, secs] = update.timestamp.split(':').map(Number)
+      const timeInSeconds = mins * 60 + secs
+      const position = (timeInSeconds / selectedEpisode.duration) * 100
+      markers.push({
+        position,
+        type: 'update',
+        label: update.title,
+        icon: update.type === 'breaking' ? '⚡' : update.type === 'major' ? '🚨' : '📢',
+        color: update.type === 'breaking' ? 'bg-red-500' : update.type === 'major' ? 'bg-orange-500' : 'bg-blue-500'
+      })
+    })
+
+    comments.forEach((comment, idx) => {
+      const match = comment.timestamp.match(/(\d+)([a-z])\s/i)
+      if (match) {
+        const value = parseInt(match[1])
+        const unit = match[2].toLowerCase()
+        let commentTimeSeconds = 0
+        if (unit === 'm') commentTimeSeconds = value * 60
+        else if (unit === 's') commentTimeSeconds = value
+        
+        const position = (commentTimeSeconds / selectedEpisode.duration) * 100
+        markers.push({
+          position,
+          type: 'comment',
+          label: comment.author,
+          icon: '💬',
+          color: 'bg-purple-500'
+        })
+      }
+    })
+
+    return markers.sort((a, b) => a.position - b.position)
+  }
+
+  const timelineMarkers = getTimelineMarkers()
+
+  const getUpdateTypeColor = (type) => {
+    switch (type) {
+      case 'breaking':
+        return 'border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20'
+      case 'major':
+        return 'border-l-4 border-orange-500 bg-orange-50 dark:bg-orange-900/20'
+      case 'update':
+        return 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+      case 'creator':
+        return 'border-l-4 border-purple-500 bg-purple-50 dark:bg-purple-900/20'
+      default:
+        return 'border-l-4 border-gray-500'
+    }
+  }
+
+  return (
+    <div className={`min-h-screen ${bgClass}`}>
+      {/* Header */}
+      <div className={`border-b ${borderClass} sticky top-0 z-10 backdrop-blur-lg`}>
+        <div className="max-w-7xl mx-auto px-4 py-6">
+          <button
+            onClick={onBack}
+            className={`mb-4 flex items-center gap-2 ${isDarkTheme ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
+          >
+            ← Back
+          </button>
+          <div className="flex items-start gap-4">
+            <div className="text-4xl">{selectedEpisode.thumbnail}</div>
+            <div>
+              <h1 className={`text-3xl font-bold ${textClass}`}>{selectedEpisode.title}</h1>
+              <p className={`${secondaryText} mt-2`}>{selectedEpisode.description}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Player Section */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Player Area */}
+            <div className={`${cardBg} border ${borderClass} rounded-xl p-8 space-y-6`}>
+              {/* Big Play Button */}
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="w-24 h-24 rounded-full bg-purple-500 hover:bg-purple-600 transition-colors flex items-center justify-center shadow-2xl"
+                >
+                  {isPlaying ? (
+                    <Pause size={48} className="text-white fill-white" />
+                  ) : (
+                    <Play size={48} className="text-white fill-white ml-2" />
+                  )}
+                </button>
+              </div>
+
+              {/* Progress Info */}
+              <div className="text-center">
+                <p className={`text-2xl font-bold ${textClass}`}>
+                  {formatTime(currentTime)} / {formatTime(selectedEpisode.duration)}
+                </p>
+                <p className={`text-sm ${secondaryText} mt-1`}>
+                  {isPlaying ? 'Playing' : 'Paused'}
+                </p>
+              </div>
+
+              {/* Enhanced Timeline with Markers */}
+              <div className="space-y-2">
+                <div
+                  ref={progressBarRef}
+                  onClick={handleProgressBarClick}
+                  className="relative cursor-pointer group"
+                >
+                  {/* Relative position container for markers */}
+                  <div className="relative h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-2">
+                    {/* Background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20" />
+
+                    {/* Update and comment markers */}
+                    {timelineMarkers.map((marker, idx) => (
+                      <div
+                        key={idx}
+                        className="absolute top-2 w-1 h-20 group/marker cursor-pointer"
+                        style={{ left: `${marker.position}%` }}
+                        title={`${marker.label} at ${formatTime(Math.floor(marker.position / 100 * selectedEpisode.duration))}`}
+                      >
+                        {/* Marker line */}
+                        <div className={`w-full h-full ${marker.color} opacity-70 group-hover/marker:opacity-100 transition-opacity`} />
+                        {/* Marker label on hover */}
+                        <div className={`absolute top-full mt-1 px-2 py-1 rounded text-xs whitespace-nowrap ${
+                          isDarkTheme ? 'bg-gray-800 text-gray-200' : 'bg-gray-900 text-white'
+                        } opacity-0 group-hover/marker:opacity-100 transition-opacity pointer-events-none`}>
+                          {marker.icon} {marker.label}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Current time indicator */}
+                    <div
+                      className="absolute top-0 h-full w-1 bg-red-500 shadow-lg z-10"
+                      style={{ left: `${(currentTime / selectedEpisode.duration) * 100}%` }}
+                    />
+                  </div>
+
+                  {/* Progress bar below markers */}
+                  <div className={`h-2 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-300'} rounded-full cursor-pointer group-hover:h-3 transition-all`}>
+                    <div
+                      className="h-full bg-purple-500 rounded-full transition-all"
+                      style={{ width: `${(currentTime / selectedEpisode.duration) * 100}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Time display under progress bar */}
+                <div className="flex justify-between text-xs">
+                  <span className={secondaryText}>{formatTime(currentTime)}</span>
+                  <span className={secondaryText}>{formatTime(selectedEpisode.duration)}</span>
+                </div>
+              </div>
+
+              {/* Playback Controls */}
+              <div className="flex items-center justify-between pt-4">
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setCurrentTime(Math.max(0, currentTime - 15))}
+                    className={`p-3 rounded-lg transition-colors ${
+                      isDarkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <SkipBack size={24} className={textClass} />
+                  </button>
+
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="px-6 py-3 rounded-lg bg-purple-500 text-white hover:bg-purple-600 transition-colors flex items-center gap-2 font-bold"
+                  >
+                    {isPlaying ? (
+                      <>
+                        <Pause size={20} className="fill-current" />
+                        Pause
+                      </>
+                    ) : (
+                      <>
+                        <Play size={20} className="fill-current ml-0.5" />
+                        Play
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setCurrentTime(Math.min(selectedEpisode.duration, currentTime + 15))}
+                    className={`p-3 rounded-lg transition-colors ${
+                      isDarkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <SkipForward size={24} className={textClass} />
+                  </button>
+                </div>
+
+                {/* Volume Control */}
+                <div className="flex items-center gap-3">
+                  <Volume2 size={20} className={secondaryText} />
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={volume}
+                    onChange={(e) => setVolume(Number(e.target.value))}
+                    className="w-24 h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                  />
+                  <span className={`text-sm w-8 ${secondaryText}`}>{volume}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Current Timestamp Items (Updates/Comments appearing NOW) */}
+            {currentItems.length > 0 && (
+              <div className={`${cardBg} border-l-4 border-purple-500 rounded-xl p-6 bg-purple-50 dark:bg-purple-900/20`}>
+                <h3 className={`font-bold ${textClass} mb-4 flex items-center gap-2`}>
+                  <Clock size={20} className="text-purple-500" />
+                  Appearing Now ({formatTime(currentTime)})
+                </h3>
+                <div className="space-y-3">
+                  {currentItems.map((item, idx) => (
+                    <div
+                      key={idx}
+                      className={`${
+                        item.type === 'update'
+                          ? getUpdateTypeColor(item.data.type)
+                          : 'border-l-4 border-purple-500 bg-purple-100 dark:bg-purple-900/30'
+                      } rounded-lg p-4`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-2xl">{item.icon}</span>
+                        <div className="flex-1">
+                          {item.type === 'update' ? (
+                            <>
+                              <p className={`font-bold ${textClass}`}>{item.data.title}</p>
+                              <p className={secondaryText}>{item.data.content}</p>
+                            </>
+                          ) : (
+                            <>
+                              <p className={`font-bold ${textClass}`}>{item.data.author}</p>
+                              <p className={secondaryText}>{item.data.message}</p>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Add Update Form at Current Time */}
+            <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+              <button
+                onClick={handleAddUpdateAtCurrentTime}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-colors ${
+                  showUpdateForm
+                    ? 'bg-purple-500 text-white'
+                    : `${isDarkTheme ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} ${textClass}`
+                }`}
+              >
+                <Plus size={20} />
+                Add Update at {formatTime(currentTime)}
+              </button>
+
+              {showUpdateForm && (
+                <div className="mt-4 space-y-4 pt-4 border-t border-gray-300 dark:border-gray-600">
+                  <div>
+                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                      Update Type
+                    </label>
+                    <select
+                      value={selectedUpdateType}
+                      onChange={(e) => setSelectedUpdateType(e.target.value)}
+                      className={`w-full px-3 py-2 rounded-lg outline-none transition-colors ${inputBg}`}
+                    >
+                      <option value="breaking">⚡ Breaking</option>
+                      <option value="major">🚨 Major</option>
+                      <option value="update">📢 Update</option>
+                      <option value="creator">✍️ Creator</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                      Title
+                    </label>
+                    <input
+                      type="text"
+                      value={updateTitle}
+                      onChange={(e) => setUpdateTitle(e.target.value)}
+                      placeholder="e.g., DNA Evidence Confirmed"
+                      className={`w-full px-3 py-2 rounded-lg outline-none transition-colors ${inputBg}`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                      Content
+                    </label>
+                    <textarea
+                      value={updateContent}
+                      onChange={(e) => setUpdateContent(e.target.value)}
+                      placeholder="Describe the update..."
+                      rows="3"
+                      className={`w-full px-3 py-3 rounded-lg outline-none transition-colors resize-none ${inputBg}`}
+                    />
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handlePostUpdate}
+                      disabled={!updateTitle.trim() || !updateContent.trim()}
+                      className={`flex-1 px-4 py-2 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 ${
+                        updateTitle.trim() && updateContent.trim()
+                          ? 'bg-purple-500 text-white hover:bg-purple-600'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                    >
+                      <CheckCircle size={18} />
+                      Post at {formatTime(currentTime)}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowUpdateForm(false)
+                        setUpdateTitle('')
+                        setUpdateContent('')
+                      }}
+                      className={`px-4 py-2 rounded-lg font-bold transition-colors ${
+                        isDarkTheme ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
+                      } ${textClass}`}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Sidebar - Comments & Updates List */}
+          <div className="space-y-6">
+            {/* Comments Tab */}
+            <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+              <button
+                onClick={() => setShowCommentsList(!showCommentsList)}
+                className={`w-full flex items-center justify-between mb-4 pb-4 border-b ${borderClass}`}
+              >
+                <h3 className={`font-bold ${textClass} flex items-center gap-2`}>
+                  <MessageCircle size={20} />
+                  Comments ({comments.length})
+                </h3>
+                <span className={`text-sm ${secondaryText}`}>
+                  {showCommentsList ? '−' : '+'}
+                </span>
+              </button>
+
+              {showCommentsList && (
+                <div className="space-y-3 max-h-96 overflow-y-auto">
+                  {comments.length > 0 ? (
+                    comments.map((comment) => (
+                      <div
+                        key={comment.id}
+                        className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-gray-100'} rounded-lg p-3 hover:shadow-md transition-shadow cursor-pointer group`}
+                      >
+                        <div className="flex items-start gap-2">
+                          <span className="text-lg">💬</span>
+                          <div className="flex-1 min-w-0">
+                            <p className={`font-bold text-sm ${textClass} group-hover:text-purple-500`}>
+                              {comment.author}
+                            </p>
+                            <p className={`text-xs ${secondaryText} line-clamp-2`}>
+                              {comment.message}
+                            </p>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className={`text-xs ${secondaryText}`}>
+                                {comment.timestamp}
+                              </span>
+                              <span className={`text-xs flex items-center gap-1 ${secondaryText}`}>
+                                <ThumbsUp size={12} /> {comment.likes}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className={`text-center py-4 ${secondaryText}`}>
+                      No comments yet
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Updates List */}
+            <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+              <h3 className={`font-bold ${textClass} mb-4 flex items-center gap-2`}>
+                <Clock size={20} />
+                Updates ({updates.length})
+              </h3>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {updates.length > 0 ? (
+                  [...updates].reverse().map((update) => (
+                    <div
+                      key={update.id}
+                      className={`${getUpdateTypeColor(update.type)} rounded-lg p-3 cursor-pointer hover:shadow-md transition-all group`}
+                      onClick={() => {
+                        const [mins, secs] = update.timestamp.split(':').map(Number)
+                        setCurrentTime(mins * 60 + secs)
+                      }}
+                    >
+                      <div className="flex items-start gap-2">
+                        <span className="text-lg">
+                          {update.type === 'breaking' ? '⚡' : update.type === 'major' ? '🚨' : '📢'}
+                        </span>
+                        <div className="flex-1 min-w-0">
+                          <p className={`font-bold text-sm ${textClass}`}>
+                            {update.timestamp}
+                          </p>
+                          <p className={`text-xs ${secondaryText} font-semibold mb-1`}>
+                            {update.title}
+                          </p>
+                          <p className={`text-xs ${secondaryText} line-clamp-2`}>
+                            {update.content}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className={`text-center py-4 ${secondaryText}`}>
+                    No updates yet. Add one by clicking a timestamp above!
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Episode Stats */}
+            {selectedEpisode.analytics && (
+              <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+                <h3 className={`font-bold ${textClass} mb-4`}>Episode Stats</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className={secondaryText}>Plays</span>
+                    <span className={`font-bold ${textClass}`}>
+                      {selectedEpisode.analytics.plays?.toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className={secondaryText}>Completion</span>
+                    <span className={`font-bold text-green-500`}>
+                      {selectedEpisode.analytics.completionRate}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className={secondaryText}>New Subs</span>
+                    <span className={`font-bold text-blue-500`}>
+                      +{selectedEpisode.analytics.newSubscribers}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className={secondaryText}>Comments</span>
+                    <span className={`font-bold ${textClass}`}>
+                      {selectedEpisode.analytics.comments || 0}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
