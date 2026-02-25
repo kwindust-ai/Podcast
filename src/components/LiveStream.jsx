@@ -6,12 +6,12 @@ export default function LiveStream({ isDarkTheme, onBack }) {
   const [selectedEpisode, setSelectedEpisode] = useState(creatorEpisodes[0])
   const [isPlaying, setIsPlaying] = useState(true)
   const [currentTime, setCurrentTime] = useState(240) // 4 minutes in
-  const [viewerCount, setViewerCount] = useState(1245)
+  const [viewerCount, setViewerCount] = useState(3450)
   const [liveChat, setLiveChat] = useState([
-    { id: 1, author: 'GreenThumb_92', message: 'Love this episode! So helpful', timestamp: '2m ago', likes: 24 },
-    { id: 2, author: 'SustyLiving', message: 'The drainage tip was perfect for my setup', timestamp: '1m ago', likes: 18 },
-    { id: 3, author: 'PlantDad', message: 'Trying this method right now!', timestamp: '45s ago', likes: 12 },
-    { id: 4, author: 'UrbanFarmer', message: 'Can anyone recommend good containers?', timestamp: '30s ago', likes: 7 },
+    { id: 1, author: 'TrueCrimeFanatic', message: 'That DNA evidence is unbelievable. Game changer for the prosecution!', timestamp: '2m ago', likes: 89 },
+    { id: 2, author: 'LawSchoolStudent', message: 'This testimony just proved the chain of custody was maintained. Admissible evidence.', timestamp: '1m ago', likes: 64 },
+    { id: 3, author: 'CourtJunkie', message: 'Sarah your analysis is so detailed. Has anyone found the trial transcripts?', timestamp: '45s ago', likes: 45 },
+    { id: 4, author: 'InvestigativeReporter', message: 'The motive angle is the weakest link imo. Need more financial records', timestamp: '30s ago', likes: 23 },
   ])
   const [chatInput, setChatInput] = useState('')
   const [volume, setVolume] = useState(70)
