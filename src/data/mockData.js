@@ -317,36 +317,41 @@ export const episodeListenerComments = {
     {
       id: 1,
       author: "CriminalJusticeStu",
-      text: "Wait, the DNA evidence was found under the fingernails? That means she fought back. This case just got way darker.",
+      message: "Wait, the DNA evidence was found under the fingernails? That means she fought back. This case just got way darker.",
       timestamp: "3 hours ago",
+      episodeTimestamp: "12:45",
       likes: 234
     },
     {
       id: 2,
       author: "DetectiveNerd",
-      text: "The cell phone records at 28:30 are so important. That's when the alibi completely falls apart.",
+      message: "The cell phone records are so important. That's when the alibi completely falls apart.",
       timestamp: "5 hours ago",
+      episodeTimestamp: "28:30",
       likes: 189
     },
     {
       id: 3,
       author: "LawStudentLife",
-      text: "Can you explain more about how DNA from fingernails is admissible? Chain of custody must be ironclad.",
+      message: "Can you explain more about how DNA from fingernails is admissible? Chain of custody must be ironclad.",
       timestamp: "7 hours ago",
+      episodeTimestamp: "5:20",
       likes: 156
     },
     {
       id: 4,
       author: "TrueCrimeFan89",
-      text: "The disappearance seems less mysterious now. When you have motive + opportunity + evidence...",
+      message: "The disappearance seems less mysterious now. When you have motive + opportunity + evidence...",
       timestamp: "8 hours ago",
+      episodeTimestamp: "34:15",
       likes: 142
     },
     {
       id: 5,
       author: "ForensicsGeek",
-      text: "That 99.9% accuracy is incredible. This case feels solved already and we're only on episode 1!",
+      message: "That 99.9% accuracy is incredible. This case feels solved already and we're only on episode 1!",
       timestamp: "10 hours ago",
+      episodeTimestamp: "8:30",
       likes: 198
     }
   ],
@@ -354,29 +359,33 @@ export const episodeListenerComments = {
     {
       id: 1,
       author: "SleuthMaster",
-      text: "The alibi falling apart at 5:20 was INSANE. Cell phone records don't lie.",
+      message: "The alibi falling apart was INSANE. Cell phone records don't lie.",
       timestamp: "2 hours ago",
+      episodeTimestamp: "5:20",
       likes: 267
     },
     {
       id: 2,
       author: "CaseAnalyzer",
-      text: "Estate worth millions? That's the classic motive right there. Follow the money.",
+      message: "Estate worth millions? That's the classic motive right there. Follow the money.",
       timestamp: "4 hours ago",
+      episodeTimestamp: "45:00",
       likes: 213
     },
     {
       id: 3,
       author: "TrialWatcher",
-      text: "Part 2 is even better than Part 1. The pacing of evidence reveals is perfect.",
+      message: "Part 2 is even better than Part 1. The pacing of evidence reveals is perfect.",
       timestamp: "6 hours ago",
+      episodeTimestamp: "15:30",
       likes: 178
     },
     {
       id: 4,
       author: "LegalBeagle",
-      text: "With cell phone records + financial motive + DNA... prosecution has an airtight case.",
+      message: "With cell phone records + financial motive + DNA... prosecution has an airtight case.",
       timestamp: "8 hours ago",
+      episodeTimestamp: "52:00",
       likes: 234
     }
   ],
@@ -384,21 +393,23 @@ export const episodeListenerComments = {
     {
       id: 1,
       author: "BreakingNewsBuff",
-      text: "THE ARREST! I literally gasped when you announced it. This investigation moved fast.",
+      message: "THE ARREST! I literally gasped when you announced it. This investigation moved fast.",
       timestamp: "1 hour ago",
+      episodeTimestamp: "8:45",
       likes: 445
     },
     {
       id: 2,
       author: "JusticeSeeker",
-      text: "The self-defense claim seems weak considering the premeditation shown in earlier episodes.",
+      message: "The self-defense claim seems weak considering the premeditation shown in earlier episodes.",
       timestamp: "3 hours ago",
+      episodeTimestamp: "22:15",
       likes: 289
     },
     {
       id: 3,
       author: "CourtJunkie",
-      text: "Can't believe this is going to trial. The confession almost guarantees conviction.",
+      message: "Can't believe this is going to trial. The confession almost guarantees conviction.",
       timestamp: "5 hours ago",
       likes: 312
     },

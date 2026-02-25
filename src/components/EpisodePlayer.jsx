@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock, Plus, CheckCircle } from 'lucide-react'
+import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock, Plus, CheckCircle, BarChart3 } from 'lucide-react'
 import { creatorEpisodes, episodeListenerComments, episodeTimestampedUpdates } from '../data/mockData'
 
-export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
+export default function EpisodePlayer({ isDarkTheme, episodeId, onBack, onViewAnalytics }) {
   const [selectedEpisode, setSelectedEpisode] = useState(() => 
     creatorEpisodes.find(ep => ep.id === episodeId) || creatorEpisodes[0]
   )
@@ -35,12 +35,12 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
     return () => clearInterval(interval)
   }, [isPlaying, selectedEpisode.duration])
 
-  const textClass = isDarkTheme ? 'text-gray-100' : 'text-gray-900'
-  const secondaryText = isDarkTheme ? 'text-gray-400' : 'text-gray-600'
-  const bgClass = isDarkTheme ? 'bg-gray-900' : 'bg-white'
-  const cardBg = isDarkTheme ? 'bg-gray-800' : 'bg-gray-50'
-  const borderClass = isDarkTheme ? 'border-gray-700' : 'border-gray-200'
-  const inputBg = isDarkTheme ? 'bg-gray-700 text-white placeholder-gray-500' : 'bg-white text-gray-900 placeholder-gray-400'
+  const textClass = isDarkTheme ? 'text-gray-50' : 'text-slate-900'
+  const secondaryText = isDarkTheme ? 'text-slate-400' : 'text-slate-600'
+  const bgClass = isDarkTheme ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950' : 'bg-gradient-to-br from-slate-50 via-white to-slate-100'
+  const cardBg = isDarkTheme ? 'bg-slate-800/50 backdrop-blur-xl' : 'bg-white/50 backdrop-blur-xl'
+  const borderClass = isDarkTheme ? 'border-slate-700/50' : 'border-slate-200/50'
+  const inputBg = isDarkTheme ? 'bg-slate-700 text-white placeholder-slate-400' : 'bg-white text-slate-900 placeholder-slate-400 border border-slate-200'
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60)
@@ -157,15 +157,11 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
     })
 
     comments.forEach((comment, idx) => {
-      const match = comment.timestamp.match(/(\d+)([a-z])\s/i)
-      if (match) {
-        const value = parseInt(match[1])
-        const unit = match[2].toLowerCase()
-        let commentTimeSeconds = 0
-        if (unit === 'm') commentTimeSeconds = value * 60
-        else if (unit === 's') commentTimeSeconds = value
-        
-        const position = (commentTimeSeconds / selectedEpisode.duration) * 100
+      // Use episodeTimestamp if available, otherwise skip this comment
+      if (comment.episodeTimestamp) {
+        const [mins, secs] = comment.episodeTimestamp.split(':').map(Number)
+        const timeInSeconds = mins * 60 + secs
+        const position = (timeInSeconds / selectedEpisode.duration) * 100
         markers.push({
           position,
           type: 'comment',
@@ -202,12 +198,25 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
       {/* Header */}
       <div className={`border-b ${borderClass} sticky top-0 z-10 backdrop-blur-lg`}>
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <button
-            onClick={onBack}
-            className={`mb-4 flex items-center gap-2 ${isDarkTheme ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
-          >
-            ← Back
-          </button>
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBack}
+              className={`flex items-center gap-2 ${isDarkTheme ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-900'} transition-colors`}
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => onViewAnalytics && onViewAnalytics(episodeId)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                isDarkTheme 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-blue-500 hover:bg-blue-600 text-white'
+              }`}
+            >
+              <BarChart3 size={18} />
+              View Analytics
+            </button>
+          </div>
           <div className="flex items-start gap-4">
             <div className="text-4xl">{selectedEpisode.thumbnail}</div>
             <div>
@@ -313,8 +322,10 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                         {/* Marker line - thicker on hover */}
                         <div className={`w-full h-full ${marker.color} opacity-70 group-hover/marker:opacity-100 transition-all group-hover/marker:scale-x-150 group-hover/marker:shadow-lg`} />
                         
-                        {/* Marker label on hover - enhanced */}
-                        <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap max-w-xs ${
+                        {/* Marker label on hover - enhanced with responsive positioning */}
+                        <div className={`absolute left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap max-w-xs ${
+                          marker.type === 'comment' ? '-top-28' : '-top-24'
+                        } ${
                           marker.type === 'comment' 
                             ? 'bg-purple-500 text-white' 
                             : marker.color === 'bg-red-500'
@@ -674,38 +685,7 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
               </div>
             </div>
 
-            {/* Episode Stats */}
-            {selectedEpisode.analytics && (
-              <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
-                <h3 className={`font-bold ${textClass} mb-4`}>Episode Stats</h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className={secondaryText}>Plays</span>
-                    <span className={`font-bold ${textClass}`}>
-                      {selectedEpisode.analytics.plays?.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={secondaryText}>Completion</span>
-                    <span className={`font-bold text-green-500`}>
-                      {selectedEpisode.analytics.completionRate}%
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={secondaryText}>New Subs</span>
-                    <span className={`font-bold text-blue-500`}>
-                      +{selectedEpisode.analytics.newSubscribers}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className={secondaryText}>Comments</span>
-                    <span className={`font-bold ${textClass}`}>
-                      {selectedEpisode.analytics.comments || 0}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
+
           </div>
         </div>
       </div>
