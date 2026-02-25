@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock } from 'lucide-react'
+import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock, Plus, CheckCircle } from 'lucide-react'
 import { creatorEpisodes, episodeListenerComments, episodeTimestampedUpdates } from '../data/mockData'
 
 export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
@@ -12,6 +12,11 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
   const [updates, setUpdates] = useState(episodeTimestampedUpdates[episodeId] || [])
   const [comments, setComments] = useState(episodeListenerComments[episodeId] || [])
   const [showCommentsList, setShowCommentsList] = useState(false)
+  const [progressBarClickTime, setProgressBarClickTime] = useState(null)
+  const [showUpdateForm, setShowUpdateForm] = useState(false)
+  const [updateTitle, setUpdateTitle] = useState('')
+  const [updateContent, setUpdateContent] = useState('')
+  const [selectedUpdateType, setSelectedUpdateType] = useState('update')
   const progressBarRef = useRef(null)
 
   // Auto-play and progress
@@ -47,7 +52,35 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
     const rect = progressBarRef.current.getBoundingClientRect()
     const percent = (e.clientX - rect.left) / rect.width
     const newTime = Math.floor(percent * selectedEpisode.duration)
-    setCurrentTime(newTime)
+    setProgressBarClickTime(newTime)
+    setShowUpdateForm(true)
+  }
+
+  const handlePostUpdate = () => {
+    if (updateTitle.trim() && updateContent.trim() && progressBarClickTime !== null) {
+      const newUpdate = {
+        id: updates.length + 1,
+        timestamp: formatTime(progressBarClickTime),
+        title: updateTitle,
+        content: updateContent,
+        postedAt: new Date().toLocaleString(),
+        type: selectedUpdateType
+      }
+      setUpdates([...updates, newUpdate])
+      setUpdateTitle('')
+      setUpdateContent('')
+      setSelectedUpdateType('update')
+      setShowUpdateForm(false)
+      setProgressBarClickTime(null)
+    }
+  }
+
+  const handleCancelUpdate = () => {
+    setShowUpdateForm(false)
+    setUpdateTitle('')
+    setUpdateContent('')
+    setSelectedUpdateType('update')
+    setProgressBarClickTime(null)
   }
 
   // Get updates and comments that appear at current timestamp
@@ -254,6 +287,99 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                   <span className={secondaryText}>{formatTime(currentTime)}</span>
                   <span className={secondaryText}>{formatTime(selectedEpisode.duration)}</span>
                 </div>
+
+                {/* Contextual Plus Button for Adding Updates */}
+                {showUpdateForm && progressBarClickTime !== null && (
+                  <div className="mt-6 pt-6 border-t border-gray-300 dark:border-gray-600">
+                    <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+                      <h4 className={`font-bold ${textClass} mb-4 flex items-center gap-2`}>
+                        <Plus size={20} className="text-purple-500" />
+                        Add Update at {formatTime(progressBarClickTime)}
+                      </h4>
+
+                      <div className="space-y-4">
+                        {/* Update Type Selection */}
+                        <div>
+                          <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                            Update Type
+                          </label>
+                          <div className="grid grid-cols-3 gap-2">
+                            {[
+                              { value: 'breaking', label: '⚡ Breaking', desc: 'Breaking updates', color: 'border-red-500' },
+                              { value: 'major', label: '🚨 Major', desc: 'Major updates', color: 'border-orange-500' },
+                              { value: 'update', label: '📢 Standard', desc: 'Standard updates', color: 'border-blue-500' }
+                            ].map((type) => (
+                              <button
+                                key={type.value}
+                                onClick={() => setSelectedUpdateType(type.value)}
+                                className={`p-3 rounded-lg border-2 transition-all text-center ${
+                                  selectedUpdateType === type.value
+                                    ? `${type.color} ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-100'}`
+                                    : `border-gray-300 dark:border-gray-600 ${isDarkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`
+                                }`}
+                              >
+                                <div className="text-xl mb-1">{type.label.split(' ')[0]}</div>
+                                <div className={`text-xs ${secondaryText}`}>{type.desc}</div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Title Input */}
+                        <div>
+                          <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                            Title
+                          </label>
+                          <input
+                            type="text"
+                            value={updateTitle}
+                            onChange={(e) => setUpdateTitle(e.target.value)}
+                            placeholder="e.g., DNA Evidence Confirmed, New Witness Found..."
+                            className={`w-full px-4 py-2 rounded-lg outline-none transition-colors ${inputBg}`}
+                          />
+                        </div>
+
+                        {/* Content Input */}
+                        <div>
+                          <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
+                            Description
+                          </label>
+                          <textarea
+                            value={updateContent}
+                            onChange={(e) => setUpdateContent(e.target.value)}
+                            placeholder="Share details about this update with your listeners..."
+                            rows="4"
+                            className={`w-full px-4 py-3 rounded-lg outline-none transition-colors resize-none ${inputBg}`}
+                          />
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex gap-3 pt-2">
+                          <button
+                            onClick={handlePostUpdate}
+                            disabled={!updateTitle.trim() || !updateContent.trim()}
+                            className={`flex-1 px-4 py-3 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 ${
+                              updateTitle.trim() && updateContent.trim()
+                                ? 'bg-purple-500 text-white hover:bg-purple-600 cursor-pointer'
+                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            }`}
+                          >
+                            <CheckCircle size={18} />
+                            Post Update at {formatTime(progressBarClickTime)}
+                          </button>
+                          <button
+                            onClick={handleCancelUpdate}
+                            className={`px-4 py-3 rounded-lg font-bold transition-colors ${
+                              isDarkTheme ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
+                            } ${textClass}`}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Playback Controls */}
