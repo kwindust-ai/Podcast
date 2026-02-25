@@ -276,10 +276,22 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                   onClick={handleProgressBarClick}
                   onMouseMove={handleTimelineHover}
                   onMouseLeave={handleTimelineLeave}
-                  className="relative group"
+                  className="relative group cursor-pointer"
                 >
+                  {/* Hover timestamp display above progress bar */}
+                  {hoverTime !== null && (
+                    <div 
+                      className="absolute -top-8 left-0 text-xs font-bold text-white pointer-events-none"
+                      style={{ left: `${(hoverTime / selectedEpisode.duration) * 100}%`, transform: 'translateX(-50%)' }}
+                    >
+                      <div className="bg-purple-600 dark:bg-purple-500 px-2 py-1 rounded border border-purple-700 dark:border-purple-400 text-center min-w-10 shadow-lg">
+                        {formatTime(hoverTime)}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Relative position container for markers and progress */}
-                  <div className="relative h-8 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
+                  <div className="relative h-8 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-lg overflow-visible border border-gray-200 dark:border-gray-600">
                     {/* Background gradient */}
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10" />
 
@@ -330,17 +342,12 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                       style={{ left: `${(currentTime / selectedEpisode.duration) * 100}%`, transform: 'translateX(-50%)' }}
                     />
 
-                    {/* Hover cursor line with timestamp */}
+                    {/* Hover cursor line */}
                     {hoverTime !== null && (
                       <div
                         className="absolute top-0 h-full w-1 bg-white shadow-lg z-30 pointer-events-none"
                         style={{ left: `${(hoverTime / selectedEpisode.duration) * 100}%`, transform: 'translateX(-50%)' }}
-                      >
-                        {/* Hover timestamp tooltip - Better visibility */}
-                        <div className="absolute -top-9 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-bold bg-purple-600 text-white whitespace-nowrap shadow-lg z-50 border border-purple-500">
-                          {formatTime(hoverTime)}
-                        </div>
-                      </div>
+                      />
                     )}
                   </div>
 
@@ -368,21 +375,21 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                           </label>
                           <div className="grid grid-cols-3 gap-2">
                             {[
-                              { value: 'breaking', label: '⚡ Breaking', desc: 'Breaking updates', color: 'border-red-500' },
-                              { value: 'major', label: '🚨 Major', desc: 'Major updates', color: 'border-orange-500' },
-                              { value: 'update', label: '📢 Standard', desc: 'Standard updates', color: 'border-blue-500' }
+                              { value: 'breaking', label: '⚡ Breaking', icon: '⚡', color: 'border-red-500 bg-red-50 dark:bg-red-900/20' },
+                              { value: 'major', label: '🚨 Major', icon: '🚨', color: 'border-orange-500 bg-orange-50 dark:bg-orange-900/20' },
+                              { value: 'update', label: '📢 Standard', icon: '📢', color: 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' }
                             ].map((type) => (
                               <button
                                 key={type.value}
                                 onClick={() => setSelectedUpdateType(type.value)}
-                                className={`p-3 rounded-lg border-2 transition-all text-center ${
+                                className={`p-3 rounded-lg border-2 transition-all text-center font-semibold ${
                                   selectedUpdateType === type.value
-                                    ? `${type.color} ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-100'}`
+                                    ? `${type.color} border-2 ${type.value === 'breaking' ? 'border-red-500' : type.value === 'major' ? 'border-orange-500' : 'border-blue-500'}`
                                     : `border-gray-300 dark:border-gray-600 ${isDarkTheme ? 'hover:bg-gray-700' : 'hover:bg-gray-100'}`
                                 }`}
                               >
-                                <div className="text-xl mb-1">{type.label.split(' ')[0]}</div>
-                                <div className={`text-xs ${secondaryText}`}>{type.desc}</div>
+                                <div className="text-2xl mb-1">{type.icon}</div>
+                                <div className={`text-xs ${textClass}`}>{type.label}</div>
                               </button>
                             ))}
                           </div>
