@@ -25,7 +25,7 @@ export default function App() {
 
   const handleSelectEpisode = (episodeId) => {
     setSelectedEpisodeId(episodeId)
-    setCurrentView('episode-detail')
+    setCurrentView('episode-player')
   }
 
   const handleBack = () => {
@@ -106,7 +106,7 @@ export default function App() {
           <EpisodePlayer 
             isDarkTheme={isDarkTheme} 
             episodeId={selectedEpisodeId} 
-            onBack={() => setCurrentView('episode-detail')}
+            onBack={() => setCurrentView('episodes')}
           />
         )}
 

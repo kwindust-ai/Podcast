@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock, Plus, CheckCircle } from 'lucide-react'
+import { Play, Pause, Volume2, SkipBack, SkipForward, X, Send, ThumbsUp, MessageCircle, Clock } from 'lucide-react'
 import { creatorEpisodes, episodeListenerComments, episodeTimestampedUpdates } from '../data/mockData'
 
 export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
@@ -9,10 +9,6 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [volume, setVolume] = useState(70)
-  const [showUpdateForm, setShowUpdateForm] = useState(false)
-  const [updateTitle, setUpdateTitle] = useState('')
-  const [updateContent, setUpdateContent] = useState('')
-  const [selectedUpdateType, setSelectedUpdateType] = useState('update')
   const [updates, setUpdates] = useState(episodeTimestampedUpdates[episodeId] || [])
   const [comments, setComments] = useState(episodeListenerComments[episodeId] || [])
   const [showCommentsList, setShowCommentsList] = useState(false)
@@ -52,28 +48,6 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
     const percent = (e.clientX - rect.left) / rect.width
     const newTime = Math.floor(percent * selectedEpisode.duration)
     setCurrentTime(newTime)
-  }
-
-  const handleAddUpdateAtCurrentTime = () => {
-    setShowUpdateForm(true)
-  }
-
-  const handlePostUpdate = () => {
-    if (updateTitle.trim() && updateContent.trim()) {
-      const newUpdate = {
-        id: updates.length + 1,
-        timestamp: formatTime(currentTime),
-        title: updateTitle,
-        content: updateContent,
-        postedAt: new Date().toLocaleString(),
-        type: selectedUpdateType
-      }
-      setUpdates([...updates, newUpdate])
-      setUpdateTitle('')
-      setUpdateContent('')
-      setSelectedUpdateType('update')
-      setShowUpdateForm(false)
-    }
   }
 
   // Get updates and comments that appear at current timestamp
@@ -375,97 +349,9 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                 </div>
               </div>
             )}
-
-            {/* Add Update Form at Current Time */}
-            <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
-              <button
-                onClick={handleAddUpdateAtCurrentTime}
-                className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-bold transition-colors ${
-                  showUpdateForm
-                    ? 'bg-purple-500 text-white'
-                    : `${isDarkTheme ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} ${textClass}`
-                }`}
-              >
-                <Plus size={20} />
-                Add Update at {formatTime(currentTime)}
-              </button>
-
-              {showUpdateForm && (
-                <div className="mt-4 space-y-4 pt-4 border-t border-gray-300 dark:border-gray-600">
-                  <div>
-                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
-                      Update Type
-                    </label>
-                    <select
-                      value={selectedUpdateType}
-                      onChange={(e) => setSelectedUpdateType(e.target.value)}
-                      className={`w-full px-3 py-2 rounded-lg outline-none transition-colors ${inputBg}`}
-                    >
-                      <option value="breaking">⚡ Breaking</option>
-                      <option value="major">🚨 Major</option>
-                      <option value="update">📢 Update</option>
-                      <option value="creator">✍️ Creator</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
-                      Title
-                    </label>
-                    <input
-                      type="text"
-                      value={updateTitle}
-                      onChange={(e) => setUpdateTitle(e.target.value)}
-                      placeholder="e.g., DNA Evidence Confirmed"
-                      className={`w-full px-3 py-2 rounded-lg outline-none transition-colors ${inputBg}`}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={`block text-sm font-semibold ${secondaryText} mb-2`}>
-                      Content
-                    </label>
-                    <textarea
-                      value={updateContent}
-                      onChange={(e) => setUpdateContent(e.target.value)}
-                      placeholder="Describe the update..."
-                      rows="3"
-                      className={`w-full px-3 py-3 rounded-lg outline-none transition-colors resize-none ${inputBg}`}
-                    />
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      onClick={handlePostUpdate}
-                      disabled={!updateTitle.trim() || !updateContent.trim()}
-                      className={`flex-1 px-4 py-2 rounded-lg font-bold transition-colors flex items-center justify-center gap-2 ${
-                        updateTitle.trim() && updateContent.trim()
-                          ? 'bg-purple-500 text-white hover:bg-purple-600'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      <CheckCircle size={18} />
-                      Post at {formatTime(currentTime)}
-                    </button>
-                    <button
-                      onClick={() => {
-                        setShowUpdateForm(false)
-                        setUpdateTitle('')
-                        setUpdateContent('')
-                      }}
-                      className={`px-4 py-2 rounded-lg font-bold transition-colors ${
-                        isDarkTheme ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-                      } ${textClass}`}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
 
-          {/* Right Sidebar - Comments & Updates List */}
+          {/* Right Sidebar - Comments & Episode Overview */}
           <div className="space-y-6">
             {/* Comments Tab */}
             <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
@@ -520,13 +406,34 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
               )}
             </div>
 
-            {/* Updates List */}
+            {/* Update Tips & Engagement Overview */}
+            <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
+              <h3 className={`font-bold ${textClass} mb-4 flex items-center gap-2`}>
+                💡 Update Tips & Strategy
+              </h3>
+              <div className="space-y-4">
+                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-blue-50'} rounded-lg p-4 border-l-4 border-blue-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Breaking Updates</p>
+                  <p className={`text-xs ${secondaryText}`}>Post major case developments and surprising evidence immediately. These get the most engagement.</p>
+                </div>
+                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-orange-50'} rounded-lg p-4 border-l-4 border-orange-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Major Updates</p>
+                  <p className={`text-xs ${secondaryText}`}>Share expert analysis, witness statements, and case turning points throughout the episode.</p>
+                </div>
+                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-purple-50'} rounded-lg p-4 border-l-4 border-purple-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Best Practice</p>
+                  <p className={`text-xs ${secondaryText}`}>Update regularly at key moments. Listeners scroll through updates, keep them interested and engaged.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Episode Updates Overview */}
             <div className={`${cardBg} border ${borderClass} rounded-xl p-6`}>
               <h3 className={`font-bold ${textClass} mb-4 flex items-center gap-2`}>
                 <Clock size={20} />
-                Updates ({updates.length})
+                Episode Updates ({updates.length})
               </h3>
-              <div className="space-y-3 max-h-96 overflow-y-auto">
+              <div className="space-y-3 max-h-80 overflow-y-auto">
                 {updates.length > 0 ? (
                   [...updates].reverse().map((update) => (
                     <div
@@ -557,7 +464,7 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                   ))
                 ) : (
                   <p className={`text-center py-4 ${secondaryText}`}>
-                    No updates yet. Add one by clicking a timestamp above!
+                    No updates posted for this episode yet.
                   </p>
                 )}
               </div>
