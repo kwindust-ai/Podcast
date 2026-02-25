@@ -17,6 +17,7 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
   const [updateTitle, setUpdateTitle] = useState('')
   const [updateContent, setUpdateContent] = useState('')
   const [selectedUpdateType, setSelectedUpdateType] = useState('update')
+  const [hoverTime, setHoverTime] = useState(null)
   const progressBarRef = useRef(null)
 
   // Auto-play and progress
@@ -81,6 +82,18 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
     setUpdateContent('')
     setSelectedUpdateType('update')
     setProgressBarClickTime(null)
+  }
+
+  const handleTimelineHover = (e) => {
+    if (!progressBarRef.current) return
+    const rect = progressBarRef.current.getBoundingClientRect()
+    const percent = (e.clientX - rect.left) / rect.width
+    const hoverSeconds = Math.floor(percent * selectedEpisode.duration)
+    setHoverTime(hoverSeconds)
+  }
+
+  const handleTimelineLeave = () => {
+    setHoverTime(null)
   }
 
   // Get updates and comments that appear at current timestamp
@@ -236,54 +249,96 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
               </div>
 
               {/* Enhanced Timeline with Markers */}
-              <div className="space-y-2">
+              <div className="space-y-3">
+                {/* Legend - Color codes */}
+                <div className="flex flex-wrap gap-3 text-xs">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                    <span className={secondaryText}>⚡ Breaking</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                    <span className={secondaryText}>🚨 Major</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                    <span className={secondaryText}>📢 Standard</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                    <span className={secondaryText}>💬 Comments</span>
+                  </div>
+                </div>
+
+                {/* Timeline Container */}
                 <div
                   ref={progressBarRef}
                   onClick={handleProgressBarClick}
                   className="relative cursor-pointer group"
                 >
                   {/* Relative position container for markers */}
-                  <div className="relative h-24 bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mb-2">
+                  <div className="relative h-24 bg-gradient-to-r from-gray-100 to-gray-50 dark:from-gray-700 dark:to-gray-800 rounded-lg overflow-hidden mb-3 border border-gray-200 dark:border-gray-600">
                     {/* Background gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10" />
 
-                    {/* Update and comment markers */}
+                    {/* Update and comment markers - Color coded */}
                     {timelineMarkers.map((marker, idx) => (
                       <div
                         key={idx}
-                        className="absolute top-2 w-1 h-20 group/marker cursor-pointer"
-                        style={{ left: `${marker.position}%` }}
+                        className="absolute top-0 h-full group/marker cursor-pointer transition-all hover:z-20"
+                        style={{ left: `${marker.position}%`, width: '3px', transform: 'translateX(-50%)' }}
                         title={`${marker.label} at ${formatTime(Math.floor(marker.position / 100 * selectedEpisode.duration))}`}
                       >
-                        {/* Marker line */}
-                        <div className={`w-full h-full ${marker.color} opacity-70 group-hover/marker:opacity-100 transition-opacity`} />
-                        {/* Marker label on hover */}
-                        <div className={`absolute top-full mt-1 px-2 py-1 rounded text-xs whitespace-nowrap ${
-                          isDarkTheme ? 'bg-gray-800 text-gray-200' : 'bg-gray-900 text-white'
-                        } opacity-0 group-hover/marker:opacity-100 transition-opacity pointer-events-none`}>
+                        {/* Marker line - thicker on hover */}
+                        <div className={`w-full h-full ${marker.color} opacity-70 group-hover/marker:opacity-100 transition-all group-hover/marker:scale-x-150 group-hover/marker:shadow-lg`} />
+                        
+                        {/* Marker label on hover - enhanced */}
+                        <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap ${
+                          marker.type === 'comment' 
+                            ? 'bg-purple-500 text-white' 
+                            : marker.color === 'bg-red-500'
+                            ? 'bg-red-500 text-white'
+                            : marker.color === 'bg-orange-500'
+                            ? 'bg-orange-500 text-white'
+                            : 'bg-blue-500 text-white'
+                        } opacity-0 group-hover/marker:opacity-100 transition-opacity pointer-events-none shadow-lg`}>
                           {marker.icon} {marker.label}
+                          <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 ${
+                            marker.type === 'comment' 
+                              ? 'bg-purple-500' 
+                              : marker.color === 'bg-red-500'
+                              ? 'bg-red-500'
+                              : marker.color === 'bg-orange-500'
+                              ? 'bg-orange-500'
+                              : 'bg-blue-500'
+                          } rotate-45`}></div>
                         </div>
                       </div>
                     ))}
 
-                    {/* Current time indicator */}
+                    {/* Current time indicator - Red line */}
                     <div
-                      className="absolute top-0 h-full w-1 bg-red-500 shadow-lg z-10"
-                      style={{ left: `${(currentTime / selectedEpisode.duration) * 100}%` }}
+                      className="absolute top-0 h-full w-1 bg-red-600 shadow-2xl z-20"
+                      style={{ left: `${(currentTime / selectedEpisode.duration) * 100}%`, transform: 'translateX(-50%)' }}
                     />
                   </div>
 
-                  {/* Progress bar below markers */}
-                  <div className={`h-2 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-300'} rounded-full cursor-pointer group-hover:h-3 transition-all`}>
+                  {/* Progress bar below markers - Enhanced with color segments */}
+                  <div className={`h-3 ${isDarkTheme ? 'bg-gray-700' : 'bg-gray-300'} rounded-full cursor-pointer group-hover:h-4 transition-all border border-gray-400 dark:border-gray-600 overflow-hidden`}>
                     <div
-                      className="h-full bg-purple-500 rounded-full transition-all"
+                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full transition-all shadow-md"
                       style={{ width: `${(currentTime / selectedEpisode.duration) * 100}%` }}
                     />
+                  </div>
+
+                  {/* Hover indicator text */}
+                  <div className="absolute -bottom-6 left-0 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-semibold text-purple-500 pointer-events-none">
+                    Click to add update
                   </div>
                 </div>
 
                 {/* Time display under progress bar */}
-                <div className="flex justify-between text-xs">
+                <div className="flex justify-between text-xs mt-3">
                   <span className={secondaryText}>{formatTime(currentTime)}</span>
                   <span className={secondaryText}>{formatTime(selectedEpisode.duration)}</span>
                 </div>
