@@ -349,11 +349,6 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                     <span className={secondaryText}>{formatTime(currentTime)}</span>
                     <span className={secondaryText}>{formatTime(selectedEpisode.duration)}</span>
                   </div>
-
-                  {/* Hint text on hover */}
-                  <div className="absolute -bottom-5 left-0 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-semibold text-purple-500 pointer-events-none">
-                    Click to add update
-                  </div>
                 </div>
 
                 {/* Contextual Plus Button for Adding Updates */}
