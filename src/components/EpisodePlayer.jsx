@@ -608,17 +608,17 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                 💡 Update Tips & Strategy
               </h3>
               <div className="space-y-4">
-                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-blue-50'} rounded-lg p-4 border-l-4 border-blue-500`}>
-                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Breaking Updates</p>
+                <div className={`${isDarkTheme ? 'bg-red-900/20' : 'bg-red-50'} rounded-lg p-4 border-l-4 border-red-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1 flex items-center gap-2`}>⚡ Breaking Updates</p>
                   <p className={`text-xs ${secondaryText}`}>Post major case developments and surprising evidence immediately. These get the most engagement.</p>
                 </div>
-                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-orange-50'} rounded-lg p-4 border-l-4 border-orange-500`}>
-                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Major Updates</p>
+                <div className={`${isDarkTheme ? 'bg-orange-900/20' : 'bg-orange-50'} rounded-lg p-4 border-l-4 border-orange-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1 flex items-center gap-2`}>🚨 Major Updates</p>
                   <p className={`text-xs ${secondaryText}`}>Share expert analysis, witness statements, and case turning points throughout the episode.</p>
                 </div>
-                <div className={`${isDarkTheme ? 'bg-gray-700/50' : 'bg-purple-50'} rounded-lg p-4 border-l-4 border-purple-500`}>
-                  <p className={`font-semibold ${textClass} text-sm mb-1`}>Best Practice</p>
-                  <p className={`text-xs ${secondaryText}`}>Update regularly at key moments. Listeners scroll through updates, keep them interested and engaged.</p>
+                <div className={`${isDarkTheme ? 'bg-blue-900/20' : 'bg-blue-50'} rounded-lg p-4 border-l-4 border-blue-500`}>
+                  <p className={`font-semibold ${textClass} text-sm mb-1 flex items-center gap-2`}>📢 Standard Updates</p>
+                  <p className={`text-xs ${secondaryText}`}>Regular updates at key moments. Keep listeners engaged with consistent, timely information throughout the episode.</p>
                 </div>
               </div>
             </div>
