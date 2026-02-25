@@ -170,6 +170,7 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
           position,
           type: 'comment',
           label: comment.author,
+          message: comment.message,
           icon: '💬',
           color: 'bg-purple-500'
         })
@@ -313,7 +314,7 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                         <div className={`w-full h-full ${marker.color} opacity-70 group-hover/marker:opacity-100 transition-all group-hover/marker:scale-x-150 group-hover/marker:shadow-lg`} />
                         
                         {/* Marker label on hover - enhanced */}
-                        <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap ${
+                        <div className={`absolute -top-10 left-1/2 transform -translate-x-1/2 px-3 py-2 rounded-lg text-xs font-semibold whitespace-nowrap max-w-xs ${
                           marker.type === 'comment' 
                             ? 'bg-purple-500 text-white' 
                             : marker.color === 'bg-red-500'
@@ -322,7 +323,14 @@ export default function EpisodePlayer({ isDarkTheme, episodeId, onBack }) {
                             ? 'bg-orange-500 text-white'
                             : 'bg-blue-500 text-white'
                         } opacity-0 group-hover/marker:opacity-100 transition-opacity pointer-events-none shadow-lg z-50`}>
-                          {marker.icon} {marker.label}
+                          {marker.type === 'comment' ? (
+                            <div className="text-left">
+                              <div className="font-bold">{marker.icon} {marker.label}</div>
+                              <div className="text-xs font-normal mt-1 whitespace-normal">{marker.message}</div>
+                            </div>
+                          ) : (
+                            <div>{marker.icon} {marker.label}</div>
+                          )}
                           <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 ${
                             marker.type === 'comment' 
                               ? 'bg-purple-500' 
