@@ -1,139 +1,182 @@
-# Sona - Social Podcast Platform
+# Sona Creator Studio
 
-A functional web-app prototype for "Sona," a social podcast platform with advanced features including a dual-layer player, real-time chat, transcript search, and context-aware UI theming.
+A powerful web-app prototype for podcast creators on the "Sona" social podcast platform. Streamline your podcast creation workflow with upload management, detailed analytics, live streaming, and episode updates.
 
-## 🚀 Features
+## 🎙️ Features for Podcast Creators
 
-### Core Features Implemented
+### 1. **Creator Dashboard**
+   - Overview of key statistics (subscribers, total listens, hours played, growth)
+   - Quick access buttons for uploading, analytics, and going live
+   - Recent episodes list with status indicators
 
-1. **Dual-Layer Player with Timestamp Bubbles**
-   - Custom audio player component with visual progress bar
-   - Hoverable timestamp bubbles that reveal comments and transcript snippets
-   - Seek functionality with time display
-   - Volume control
+### 2. **Episode Upload Workflow**
+   - **Step 1: Upload** - Drag-and-drop audio file upload with progress tracking
+   - **Step 2: Details** - Add title, description, tags, and publishing options
+   - **Step 3: Review** - Confirm and publish episode with next steps guidance
+   - Schedule episodes for future publishing
+   - Mark explicit content
+   - Support for multiple audio formats (MP3, WAV, M4A)
 
-2. **Episode Hub with Two Tabs**
-   - **Live Feed**: Real-time mock chat for episode discussion
-   - **The Case File**: Structured forum with pinned creator updates and resource links
-   - Expandable/collapsible interface with smooth animations
+### 3. **Episode Analytics**
+   - **Key Metrics**: Plays, Downloads, Average Listen Time, Comments
+   - **Charts & Visualizations**:
+     - Plays over time (line chart)
+     - Listener behavior (completion rate pie chart)
+     - Downloads tracking (bar chart)
+     - New subscriber acquisition
+   - Time range filters (7d, 30d, 90d, all-time)
+   - Episode comparison view
+   - Revenue tracking per episode
 
-3. **Context-Aware UI Theme**
-   - Toggle between "Dark/Serious" theme (for True Crime hubs)
-   - And "Vibrant/Social" theme (for Comedy/Educational hubs)
-   - Auto-theme selection based on podcast category
-   - Manual theme override option
+### 4. **Live Streaming**
+   - Real-time episode broadcasting
+   - Live chat with listeners
+   - Microphone control (mute/unmute)
+   - Viewer count tracking
+   - Stream summary on end (duration, peak viewers, chat count)
+   - Stream saving functionality
 
-4. **Library Mode vs. Discovery Mode**
-   - **Library Mode**: Vertical list of subscribed shows with episode counts
-   - **Discovery Mode**: TikTok-style micro-clip feed with swipe navigation
-   - Smooth toggle in header
+### 5. **Episode Updates & Resources**
+   - **Post-Episode Updates**:
+     - 📌 General Updates
+     - ⚠️ Corrections
+     - 📄 Resource Links
+   - **Suggested Updates** based on listener feedback
+   - Like and reply to updates
+   - Update history timeline
+   - Best practices guide for creators
 
-5. **Transcript Search**
-   - Search bar that finds episodes by keywords
-   - Highlights matching timestamps in results
-   - Shows full transcript context for each match
-
-6. **Mock Data**
-   - Elena's "Urban Garden Lab" (Educational, Vibrant theme)
-   - Marcus's "Tech Talks Daily" (Technology, Dark theme)
-   - "True Crime Chronicles" (True Crime, Dark theme)
-   - Full episodes with transcripts, timestamps, and comments
+### 6. **Context-Aware UI**
+   - Toggle between dark mode (serious/analytical) and light mode (creative/vibrant)
+   - Smooth theme transitions
+   - Persistent user preferences
 
 ## 🛠️ Tech Stack
 
 - **React 18.2.0** - UI framework
-- **Vite 4.3.9** - Build tool
+- **Vite 4.3.9** - Build tool and dev server
 - **Tailwind CSS 3.3.0** - Styling
 - **Lucide React 0.263.1** - Icons
+- **Recharts 2.10.3** - Analytics visualizations
 
 ## 📦 Installation
 
-1. Install dependencies:
+1. Clone or navigate to the project directory
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-2. Start the development server:
+3. Start the development server:
 ```bash
 npm run dev
 ```
 
-3. Open your browser to `http://localhost:3000`
+4. Open your browser to `http://localhost:3000`
 
 ## 🎯 Project Structure
 
 ```
 src/
-├── App.jsx                 # Main application component
-├── main.jsx               # React entry point
-├── index.css              # Global styles
+├── App.jsx                      # Main application component
+├── main.jsx                     # React entry point
+├── index.css                    # Global styles
 ├── components/
-│   ├── DualLayerPlayer.jsx      # Custom audio player
-│   ├── EpisodeHub.jsx           # Live feed & case file
-│   ├── HomeScreen.jsx           # Library & Discovery modes
-│   └── Search.jsx               # Transcript search
+│   ├── CreatorDashboard.jsx     # Main dashboard view
+│   ├── EpisodeUpload.jsx        # Multi-step upload wizard
+│   ├── Analytics.jsx            # Episode analytics & charts
+│   ├── LiveStream.jsx           # Live streaming interface
+│   ├── EpisodeUpdates.jsx       # Episode updates & resources
+│   ├── DualLayerPlayer.jsx      # (Legacy) Custom audio player
+│   ├── EpisodeHub.jsx           # (Legacy) Chat & resources
+│   ├── HomeScreen.jsx           # (Legacy) Listener home
+│   └── Search.jsx               # (Legacy) Transcript search
 └── data/
-    └── mockData.js        # Mock podcasts and data
+    └── mockData.js              # Creator data & mock analytics
 ```
 
 ## 🎨 Design Features
 
-- **Mobile-First Responsive Design** - Optimized for all screen sizes
-- **Smooth Animations** - Slide-up panels, fade transitions
-- **Native App Feel** - Bottom navigation, expandable components
-- **Accessibility** - Keyboard navigation, clear labels
-- **High-End Visual Polish** - Gradients, shadows, micro-interactions
+- **Creator-Focused Interface** - Everything optimized for podcast creators
+- **Multi-Step Workflows** - Intuitive uploading and configuration
+- **Rich Analytics** - Visual insights into listener behavior
+- **Live Interaction** - Real-time connection with your audience
+- **Mobile-Responsive** - Works seamlessly on all screen sizes
+- **Dark/Light Modes** - Switch between professional and creative themes
+- **High-Fidelity Mockups** - Production-ready UI patterns
 
-## 🎮 Usage
+## 📊 Mock Data
 
-### Home Screen
-- Switch between Library (subscribed shows) and Discovery (trending episodes)
-- Tap any episode to start playing
+### Creator Profile
+- **Name**: Elena Rodriguez
+- **Podcast**: Urban Garden Lab 🌱
+- **Subscribers**: 45,200
+- **Total Listens**: 892,340
+- **Hours Played**: 12,450+
 
-### Player
-- Use the play/pause button to control playback
-- Click on timestamp bubbles in the progress bar to jump to specific moments
-- Expand the episode hub at the bottom to see live chat or resources
+### Sample Episodes
+1. **Growing Tomatoes in Small Spaces** - Published ✅
+   - 3,420 plays, 892 downloads, 84% completion rate
+2. **Composting 101** - Published ✅
+   - 2,890 plays, 645 downloads, 91% completion rate
+3. **Spring Garden Prep** - Draft 📝
+4. **Q&A Live** - Scheduled 📅
 
-### Search
-- Type keywords to search across all episodes
-- Results show matching timestamps with context
-- Click a result to navigate to that episode
+### Analytics Data
+- 7-day analytics with plays, downloads, and new subscriber trends
+- Listener behavior breakdown (completion rates)
+- Revenue tracking per episode
+- Engagement metrics (shares, comments)
 
-### Theme Toggle
-- Use the moon/sun icon in the bottom navigation to toggle dark/light mode
-- Some podcasts auto-select their theme based on category
+## 🚀 User Flows
 
-## 📝 Mock Data
+### Upload Episode
+1. Select and upload audio file
+2. Add episode details (title, description, tags)
+3. Choose publishing options (immediate or scheduled)
+4. Review and publish
+5. See confirmation with next steps
 
-### Podcasts Included
+### View Analytics
+1. Select episode from dropdown
+2. View key metrics cards
+3. Analyze charts over different time ranges
+4. Understand listener behavior
+5. Track revenue and growth
 
-1. **Urban Garden Lab** by Elena Rodriguez
-   - Category: Educational
-   - Theme: Vibrant
-   - Episodes: Growing Tomatoes, Composting 101
+### Go Live
+1. Start live stream
+2. Manage microphone and settings
+3. Interact with live chat
+4. Monitor viewer count
+5. End stream and view summary
 
-2. **Tech Talks Daily** by Marcus Chen
-   - Category: Technology
-   - Theme: Dark
-   - Episodes: AI Ethics, Quantum Computing
+### Manage Updates
+1. Select episode
+2. Add corrections, resources, or updates
+3. Publish to listener feed
+4. Track engagement (likes, replies)
+5. Use suggested updates for quick setup
 
-3. **True Crime Chronicles** by Detective Sarah Winters
-   - Category: True Crime
-   - Theme: Dark
-   - Episodes: The Missing Paintings
+## 🎬 Next Steps & Enhancements
 
-## 🚀 Future Enhancements
-
-- Audio streaming integration
-- User authentication and profiles
-- Real-time WebSocket chat
-- Timestamp bookmarking
-- Share to social media
-- Push notifications
-- Offline caching
-- Advanced search filters
+- **Real Audio Processing**: Integrate actual audio file uploads and encoding
+- **WebSocket Chat**: Real-time listener chat during live streams
+- **Payment Integration**: Monetization and revenue tracking
+- **User Authentication**: Creator accounts with email/social login
+- **Storage Solutions**: AWS S3 or similar for episode files
+- **Notifications**: Email/push alerts for episode activity
+- **Social Sharing**: Direct integration with social platforms
+- **Advanced SEO**: Show descriptions, keywords, categories
+- **Sponsorship Tools**: Manage sponsors and ad breaks
+- **Listener Profiles**: Understand your audience demographics
+- **A/B Testing**: Test episode descriptions and cover art
 
 ## 📄 License
 
-MIT License - feel free to use this prototype as a foundation for your own podcast platform!
+MIT License - Use this prototype as a foundation for your podcast creation platform!
+
+## 🤝 Support
+
+This is a prototype designed for UX/UI evaluation. For production use, additional backend services and security measures would be needed.
+

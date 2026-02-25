@@ -1,173 +1,169 @@
-// Mock podcast data
-export const mockPodcasts = [
+// Mock creator dashboard data
+export const creatorProfile = {
+  id: 1,
+  name: "Elena Rodriguez",
+  email: "elena@urbangarden.com",
+  podcastTitle: "Urban Garden Lab",
+  podcastImage: "🌱",
+  bio: "Exploring sustainable urban gardening techniques",
+  subscribers: 45200,
+  totalListens: 892340,
+  totalHours: 12450,
+  joinedDate: "January 2023",
+  theme: "vibrant",
+}
+
+// Mock episodes data for creator
+export const creatorEpisodes = [
   {
     id: 1,
-    title: "Urban Garden Lab",
-    creator: "Elena Rodriguez",
-    category: "Educational",
-    theme: "vibrant",
-    image: "🌱",
-    description: "Exploring sustainable urban gardening techniques",
-    subscribers: 45200,
-    episodes: [
-      {
-        id: 1,
-        title: "Growing Tomatoes in Small Spaces",
-        duration: 2340,
-        publishedAt: "2 days ago",
-        description: "Learn how to maximize your yields with container gardening",
-        transcript: [
-          { time: 0, text: "Welcome to Urban Garden Lab!" },
-          { time: 15, text: "Today we're talking about growing tomatoes" },
-          { time: 45, text: "Container gardening is perfect for small spaces" },
-          { time: 120, text: "You'll need good drainage holes" },
-          { time: 180, text: "Water consistently throughout the season" },
-          { time: 300, text: "Pruning techniques to maximize yield" },
-          { time: 450, text: "Watch for common pests and diseases" },
-        ],
-        comments: [
-          { author: "GreenThumb_92", text: "Love the pruning tips!", time: 234 },
-          { author: "SustyLiving", text: "Perfect for my balcony!", time: 567 },
-          { author: "PlantDad", text: "Question about watering frequency?", time: 890 },
-        ]
-      },
-      {
-        id: 2,
-        title: "Composting 101: Turn Waste into Gold",
-        duration: 1920,
-        publishedAt: "1 week ago",
-        description: "Master the art of composting at home",
-        transcript: [
-          { time: 0, text: "Welcome back everyone!" },
-          { time: 20, text: "Today's episode: composting for beginners" },
-          { time: 100, text: "Brown materials: leaves, cardboard, paper" },
-          { time: 250, text: "Green materials: food scraps, grass clippings" },
-          { time: 400, text: "The magic ratio: 3 parts brown to 1 part green" },
-          { time: 600, text: "Moisture is key to decomposition" },
-        ],
-        comments: [
-          { author: "ZeroWaste", text: "Game changer for my garden!", time: 234 },
-        ]
-      }
-    ]
+    title: "Growing Tomatoes in Small Spaces",
+    status: "published",
+    duration: 2340,
+    publishedAt: "2 days ago",
+    publishedDate: "Feb 22, 2026",
+    description: "Learn how to maximize your yields with container gardening",
+    thumbnail: "🍅",
+    fileSize: "45.2 MB",
+    analytics: {
+      plays: 3420,
+      downloads: 892,
+      avgListenTime: "1:58",
+      completionRate: 84,
+      shares: 234,
+      comments: 127,
+      newSubscribers: 48,
+      revenue: 234.50,
+    },
+    audioFile: "episode-001.mp3"
   },
   {
     id: 2,
-    title: "Tech Talks Daily",
-    creator: "Marcus Chen",
-    category: "Technology",
-    theme: "dark",
-    image: "💻",
-    description: "Deep dives into emerging technologies",
-    subscribers: 89300,
-    episodes: [
-      {
-        id: 3,
-        title: "The Future of AI: Responsible Development",
-        duration: 2850,
-        publishedAt: "3 days ago",
-        description: "Discussing ethical AI and responsible innovation",
-        transcript: [
-          { time: 0, text: "Tech Talks Daily, episode 156" },
-          { time: 30, text: "Today we're discussing AI ethics and responsibility" },
-          { time: 120, text: "Bias in machine learning models is a critical issue" },
-          { time: 300, text: "Transparency in AI decision-making" },
-          { time: 500, text: "Regulatory frameworks around the world" },
-          { time: 700, text: "The role of developers in responsible AI" },
-        ],
-        comments: [
-          { author: "TechEthics", text: "Finally someone discussing this!", time: 345 },
-          { author: "CodeNinja", text: "Great perspectives from the panel", time: 789 },
-        ]
-      },
-      {
-        id: 4,
-        title: "Quantum Computing Explained",
-        duration: 2200,
-        publishedAt: "2 weeks ago",
-        description: "Breaking down quantum mechanics for developers",
-        transcript: [
-          { time: 0, text: "Welcome to Tech Talks Daily" },
-          { time: 25, text: "Quantum computing: the next frontier" },
-          { time: 150, text: "Qubits: the quantum bit" },
-          { time: 300, text: "Superposition and entanglement explained" },
-          { time: 500, text: "Current quantum computers and their limitations" },
-        ],
-        comments: []
-      }
-    ]
+    title: "Composting 101: Turn Waste into Gold",
+    status: "published",
+    duration: 1920,
+    publishedAt: "1 week ago",
+    publishedDate: "Feb 15, 2026",
+    description: "Master the art of composting at home",
+    thumbnail: "🌍",
+    fileSize: "38.7 MB",
+    analytics: {
+      plays: 2890,
+      downloads: 645,
+      avgListenTime: "1:45",
+      completionRate: 91,
+      shares: 156,
+      comments: 89,
+      newSubscribers: 32,
+      revenue: 178.30,
+    },
+    audioFile: "episode-002.mp3"
   },
   {
     id: 3,
-    title: "True Crime Chronicles",
-    creator: "Detective Sarah Winters",
-    category: "True Crime",
-    theme: "dark",
-    image: "🔍",
-    description: "Investigating real cases and mysterious disappearances",
-    subscribers: 234500,
-    episodes: [
-      {
-        id: 5,
-        title: "Case #47: The Missing Paintings",
-        duration: 3240,
-        publishedAt: "5 days ago",
-        description: "A $2M art heist that baffled authorities",
-        transcript: [
-          { time: 0, text: "True Crime Chronicles, case number 47" },
-          { time: 40, text: "The missing paintings investigation" },
-          { time: 180, text: "Timeline of events on the night of the heist" },
-          { time: 400, text: "Evidence collected at the scene" },
-          { time: 650, text: "Suspects and their motives" },
-          { time: 900, text: "Breaking: new lead emerges after 5 years" },
-        ],
-        comments: [
-          { author: "CrimeBuff", text: "This is insane! Any updates?", time: 456 },
-          { author: "DetectiveMode", text: "The second suspect seems guilty to me", time: 678 },
-        ]
-      }
-    ]
-  }
-];
-
-// Mock live chat messages
-export const mockChatMessages = [
-  { id: 1, author: "GreenThumb_92", message: "Love Elena's content!", timestamp: "2m ago", avatar: "👤" },
-  { id: 2, author: "SustyLiving", message: "Just started container gardening!", timestamp: "5m ago", avatar: "👤" },
-  { id: 3, author: "PlantDad", message: "Anyone else dealing with aphids?", timestamp: "8m ago", avatar: "👤" },
-  { id: 4, author: "UrbanFarmer", message: "The drainage tip was so helpful", timestamp: "1m ago", avatar: "👤" },
-];
-
-// Mock case file resources
-export const mockResources = [
-  {
-    id: 1,
-    type: "update",
-    author: "Elena Rodriguez",
-    title: "📌 Pinned: Latest Gardening Trends 2024",
-    content: "Explore the top 5 gardening trends this season including vertical gardens and hydroponics.",
-    date: "2 days ago"
-  },
-  {
-    id: 2,
-    type: "resource",
-    title: "🔗 Complete Composting Guide",
-    description: "Comprehensive PDF guide to composting at home",
-    link: "#"
-  },
-  {
-    id: 3,
-    type: "resource",
-    title: "🔗 Soil Testing Kit Recommendations",
-    description: "Top 3 affordable soil testing kits for home gardeners",
-    link: "#"
+    title: "Spring Garden Prep: Season Planning",
+    status: "draft",
+    duration: null,
+    publishedAt: null,
+    createdDate: "Feb 23, 2026",
+    description: "Getting your garden ready for spring planting",
+    thumbnail: "🌸",
+    progress: 75,
+    fileSize: "52.1 MB",
   },
   {
     id: 4,
-    type: "update",
-    author: "Elena Rodriguez",
-    title: "📌 Community Challenge: 30-Day Growth Challenge",
-    content: "Join our community in growing something new this month. Share your progress and get featured!",
-    date: "1 week ago"
+    title: "Q&A Live: Your Garden Questions Answered",
+    status: "scheduled",
+    duration: null,
+    scheduledFor: "Feb 28, 2026 at 3:00 PM PST",
+    description: "Live episode where I answer your questions about gardening",
+    thumbnail: "💬",
+    isLive: true,
   }
 ];
+
+// Mock analytics data
+export const analyticsData = [
+  { day: "Mon", plays: 320, downloads: 85, newSubs: 12 },
+  { day: "Tue", plays: 450, downloads: 120, newSubs: 18 },
+  { day: "Wed", plays: 380, downloads: 95, newSubs: 14 },
+  { day: "Thu", plays: 520, downloads: 145, newSubs: 22 },
+  { day: "Fri", plays: 680, downloads: 180, newSubs: 32 },
+  { day: "Sat", plays: 890, downloads: 210, newSubs: 41 },
+  { day: "Sun", plays: 640, downloads: 160, newSubs: 28 },
+];
+
+// Mock comments/messages
+export const episodeComments = [
+  {
+    id: 1,
+    author: "GreenThumb_92",
+    text: "Love the pruning tips! Can you do a follow-up on indoor gardening?",
+    timestamp: "2 hours ago",
+    likes: 42,
+    avatar: "👤"
+  },
+  {
+    id: 2,
+    author: "SustyLiving",
+    text: "Perfect for my balcony! Just implemented your drainage system.",
+    timestamp: "5 hours ago",
+    likes: 38,
+    avatar: "👤"
+  },
+  {
+    id: 3,
+    author: "PlantDad",
+    text: "Question about watering frequency in hot climates?",
+    timestamp: "8 hours ago",
+    likes: 12,
+    avatar: "👤"
+  }
+];
+
+// Mock episode updates
+export const episodeUpdates = [
+  {
+    id: 1,
+    type: "update",
+    title: "New Resources Added",
+    content: "I've added a downloadable PDF guide for container gardening measurements.",
+    date: "Feb 22, 2026",
+    icon: "📄"
+  },
+  {
+    id: 2,
+    type: "correction",
+    title: "Correction: Watering Schedule",
+    content: "In the episode I mentioned watering twice daily, but for most vegetables once daily is sufficient.",
+    date: "Feb 22, 2026",
+    icon: "⚠️"
+  }
+];
+
+// Mock suggested content
+export const suggestedUpdates = [
+  {
+    id: 1,
+    type: "resource",
+    title: "Soil Testing Kit",
+    description: "Link to the recommended soil testing kit mentioned in episode"
+  },
+  {
+    id: 2,
+    type: "correction",
+    title: "Watering Frequency",
+    description: "Clarification on watering schedules for different vegetables"
+  },
+  {
+    id: 3,
+    type: "followup",
+    title: "Indoor Gardening Deep Dive",
+    description: "Follow-up episode based on listener requests"
+  }
+];
+
+// Remove old data exports
+export const mockChatMessages = []
+export const mockResources = []
